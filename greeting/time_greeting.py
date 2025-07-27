@@ -7,7 +7,7 @@ message=""
 def getMessage():
     hour=getCurrentHour()
 
-    if hour > 0 and hour < 5:
+    if hour >=0 and hour < 5:
       message="Go Sleep That's Enough for Today 🛏️💤"
       return message
 

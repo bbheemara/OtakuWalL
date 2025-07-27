@@ -18,7 +18,7 @@ try:
     quote, anime_name, character = quotes()
 except Exception as e:
     print("Failed to fetch quote:", e)
-    quote = "I'm not gonna run away, I never go back on my word! That's my nindō: my ninja way!"
+    quote = "I'm not gonna run away, I never go back on my word! That's my nindo: my ninja way!"
     anime_name = "Naruto"
     character = "Naruto Uzumaki"
 
@@ -31,7 +31,7 @@ def download_wallpaper(image_url, filename=WALLPAPER_FILENAME, save_dir=SAVE_DIR
         return filepath
     else:
         print("Failed to download wallpaper.")
-        return None
+        return None   
 
 
 
@@ -45,7 +45,6 @@ def fetch_wallpaper():
     else:
         print("No wallpaper found.")
         return None
-
 
 
 def wrap_text(text, font, max_width, draw):
@@ -87,7 +86,6 @@ def draw_wrapped_text(draw, text, position, font, max_width):
         y += line_height + 5
 
 
-
 downloaded_path = fetch_wallpaper()
 if not downloaded_path:
     exit()
@@ -118,10 +116,19 @@ for i, line in enumerate(quote_lines):
     line_width = line_bbox[2] - line_bbox[0]
     x = (image.width - line_width) // 2
     draw_outline_text(draw, line, (x, start_y), font)
-    start_y += line_heights[i] + 5
+    start_y += line_heights[i] + 5            
 
 
-    
+image = image.convert('RGBA')  
+
+weather = Image.open('assets/rain.png').convert("RGBA") 
+
+
+weather = weather.resize((50, 50))
+
+alpha =200
+weather.putalpha(alpha)
+image.paste(weather, (image.width-1850, 90), weather)  
 
 bmp_path = downloaded_path.replace('.jpg', '.bmp')
 image.save(bmp_path, 'BMP')
