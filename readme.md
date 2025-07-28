@@ -1,6 +1,6 @@
-# OtakuWalLL – Smart Dynamic Anime Wallpaper App
+# OtakuWalL – Smart Dynamic Anime Wallpaper App
 
-OtakuWalLL is a smart and lightweight Python desktop wallpaper generator that:
+OtakuWalL is a smart and lightweight Python desktop wallpaper generator that:
 - Fetches HD anime wallpapers ❤️‍🔥(You can even get your favorite one's only or random Too)
 - Gets Hourly quote for Motivation 🤩(From your favorite anime also or random based on api)
 - Displays dynamic time-based greetings ⏰
@@ -16,22 +16,19 @@ OtakuWalLL is a smart and lightweight Python desktop wallpaper generator that:
 - 💬 Font & Style Customizations
 
 ## 🔧 Setup Instructions
-
-1. **Clone the repo**  
 ```bash
+1. Clone the repo
 git clone https://github.com/bbheemara/OtakuWalL.git
-cd OtakuWalLL
+cd OtakuWalL
 
-2. **Install dependencies**
-```bash
+2. Install dependencies
 pip install -r requirements.txt
 
-3. **Change according to your need**
+3. Change according to your need
 In main.py change anime_name='your fav anime' 
 also change city='your city for weather'
 and If you want to change font of your choice just download your font and save in assets/fonts folder then in main.py FONT_PATH = 'assets/fonts/<your_font>'
 
 
-4. **Run the app**
-```bash
+4. Run the app
 python main.py
