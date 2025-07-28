@@ -8,21 +8,21 @@ def getMessage():
     hour=getCurrentHour()
 
     if hour >=0 and hour < 5:
-      message="Go Sleep That's Enough for Today 🛏️💤"
+      message="Go Sleep That's Enough for Today"
       return message
 
 
     elif hour < 12:
-      message="Morning champ!! ☀️"  
+      message="Morning champ!!"  
       return message
 
 
     elif hour < 18:
-       message="Afternoon Remember to eat! 🍜"
+       message="Afternoon Remember to eat!"
        return message
 
 
     else:
-       message="Evening!! 🌆"   
+       message="Evening!!"   
        return message 
 

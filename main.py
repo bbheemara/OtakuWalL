@@ -4,15 +4,19 @@ import requests
 from PIL import Image, ImageDraw, ImageFont 
 from greeting.time_greeting import getMessage
 from api.fetch_quote import quotes
+from dotenv import load_dotenv
+from io import BytesIO
+
+load_dotenv()
 
 SPI_SETDESKWALLPAPER = 20
 SAVE_DIR = 'assets/backgrounds'
 WALLPAPER_FILENAME = 'wallpaper.jpg'
-FONT_PATH = 'assets/fonts/RocketRinder.otf'
-font=ImageFont.truetype(FONT_PATH,size=40)
-
+FONT_PATH = 'assets/fonts/google_font.ttf'
+font=ImageFont.truetype(FONT_PATH,size=50)
 os.makedirs(SAVE_DIR, exist_ok=True)
 message = getMessage()
+
 
 try:
     quote, anime_name, character = quotes()
@@ -21,6 +25,9 @@ except Exception as e:
     quote = "I'm not gonna run away, I never go back on my word! That's my nindo: my ninja way!"
     anime_name = "Naruto"
     character = "Naruto Uzumaki"
+
+anime_name=anime_name
+
 
 def download_wallpaper(image_url, filename=WALLPAPER_FILENAME, save_dir=SAVE_DIR):
     response = requests.get(image_url)
@@ -43,8 +50,13 @@ def fetch_wallpaper():
         image_url = data['data'][0]['path']
         return download_wallpaper(image_url)
     else:
-        print("No wallpaper found.")
-        return None
+        print("No wallpaper found:Retrting")
+        resp = requests.get(url)
+        data = resp.json()
+        if 'data' in data and len(data['data']) > 0:
+            image_url = data['data'][0]['path']
+            return download_wallpaper(image_url)
+        
 
 
 def wrap_text(text, font, max_width, draw):
@@ -93,7 +105,7 @@ if not downloaded_path:
 
 image = Image.open(downloaded_path).convert("RGB")
 draw = ImageDraw.Draw(image)
-font = ImageFont.truetype(FONT_PATH, 40)
+font = ImageFont.truetype(FONT_PATH, 50)
 
 
 draw_wrapped_text(draw, message, (100, 40), font, image.width - 60)
@@ -118,17 +130,76 @@ for i, line in enumerate(quote_lines):
     draw_outline_text(draw, line, (x, start_y), font)
     start_y += line_heights[i] + 5            
 
+image = image.convert('RGBA') 
+API_KEY=os.environ.get('api')
+city='Raichur'
+url = f'https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric'
+resp_w=requests.get(url)
+data_w=resp_w.json()
 
-image = image.convert('RGBA')  
+if resp_w.status_code==200:
+    temp=data_w['main']['temp']
+    weather_state=data_w['weather'][0]['main']
+    icon_code=data_w['weather'][0]['icon']
+    icon_url = f"https://openweathermap.org/img/wn/{icon_code}@2x.png"
+    resp=requests.get(icon_url)
+    icon_img = Image.open(BytesIO(resp.content)).convert("RGBA")
+    
 
-weather = Image.open('assets/rain.png').convert("RGBA") 
+    temp=temp
+    temp_text=f'{temp}°C'
+    if weather_state=='Clouds':
+       
+    #    weather = Image.open('assets/clouds.png').convert("RGBA") 
+       icon_img = icon_img.resize((50, 50))
+       alpha =200
+       icon_img.putalpha(alpha)
+       draw = ImageDraw.Draw(image)
+       image.paste(icon_img, (image.width-200, 50), icon_img)  
+       draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+       draw_wrapped_text(draw,temp_text, (image.width-400,50),font,image.width-60)
+
+    elif weather_state=='Clear':
+          icon_img = icon_img.resize((50, 50))
+          alpha =200
+          icon_img.putalpha(alpha)
+          draw = ImageDraw.Draw(image)
+          image.paste(icon_img, (image.width-200, 50), icon_img)  
+          draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+          draw_wrapped_text(draw,temp_text, (image.width-400,50),font,image.width-60)
+
+    elif weather_state=='Rain':
+          icon_img = icon_img.resize((50, 50))
+          alpha =200
+          icon_img.putalpha(alpha)
+          draw = ImageDraw.Draw(image)
+          image.paste(icon_img, (image.width-200, 50), icon_img)  
+          draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+          draw_wrapped_text(draw,temp_text, (image.width-400,50),font,image.width-60)
 
 
-weather = weather.resize((50, 50))
+    elif weather_state=='Drizzle':
+            icon_img = icon_img.resize((50, 50))
+            alpha =200
+            icon_img.putalpha(alpha)
+            draw = ImageDraw.Draw(image)
+            image.paste(icon_img, (image.width-200, 50), icon_img)  
+            draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+            draw_wrapped_text(draw,temp_text, (image.width-400,50),font,image.width-60)
 
-alpha =200
-weather.putalpha(alpha)
-image.paste(weather, (image.width-1850, 90), weather)  
+    elif weather_state=='Snow':
+                icon_img = icon_img.resize((50, 50))
+                alpha =200
+                icon_img.putalpha(alpha)
+                draw = ImageDraw.Draw(image)
+                image.paste(icon_img, (image.width-200, 50), icon_img)  
+                draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+                draw_wrapped_text(draw,temp_text, (image.width-400,50),font,image.width-60)
+
+
+else:
+    print("Error:", data_w['message'])
+
 
 bmp_path = downloaded_path.replace('.jpg', '.bmp')
 image.save(bmp_path, 'BMP')
