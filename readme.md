@@ -16,7 +16,7 @@ OtakuWalLL is a smart and lightweight Python desktop wallpaper generator that:
 - 💬 Font & Style Customizations
 
 ## 🔧 Setup Instructions
-
+```bash
 1. **Clone the repo**  
 ```bash
 git clone https://github.com/bbheemara/OtakuWalL.git
