@@ -1,4 +1,4 @@
-# OtakuWalL – Smart Dynamic Anime Wallpaper App
+# OtakuWalL – Smart Dynamic Anime Wallpaper Genarator
 
 OtakuWalL is a smart and lightweight Python desktop wallpaper generator that:
 - Fetches HD anime wallpapers ❤️‍🔥(You can even get your favorite one's only or random Too)
