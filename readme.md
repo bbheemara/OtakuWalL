@@ -17,13 +17,11 @@ OtakuWalLL is a smart and lightweight Python desktop wallpaper generator that:
 
 ## 🔧 Setup Instructions
 ```bash
-1. **Clone the repo**  
-```bash
+1. **Clone the repo**
 git clone https://github.com/bbheemara/OtakuWalL.git
 cd OtakuWalLL
 
 2. **Install dependencies**
-```bash
 pip install -r requirements.txt
 
 3. **Change according to your need**
@@ -33,5 +31,4 @@ and If you want to change font of your choice just download your font and save i
 
 
 4. **Run the app**
-```bash
 python main.py
