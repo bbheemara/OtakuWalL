@@ -35,4 +35,4 @@ and If you want to change font of your choice just download your font and save i
 4. Run the app
    ```bash
    python main.py
-```
+   ```
