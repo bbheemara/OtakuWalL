@@ -16,14 +16,16 @@ OtakuWalL is a smart and lightweight Python desktop wallpaper generator that:
 - 💬 Font & Style Customizations
 
 ## 🔧 Setup Instructions
-```bash
+
 1. Clone the repo
+```bash
 git clone https://github.com/bbheemara/OtakuWalL.git
 cd OtakuWalL
-
+```
 2. Install dependencies
+```bash
 pip install -r requirements.txt
-
+```
 3. Change according to your need
 In main.py change anime_name='your fav anime' 
 also change city='your city for weather'(Sign up for https://openweathermap.org/ and get your api key it's free and paste in .env)
@@ -31,4 +33,6 @@ and If you want to change font of your choice just download your font and save i
 
 
 4. Run the app
-python main.py
+   ```bash
+   python main.py
+```
