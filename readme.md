@@ -28,3 +28,5 @@ and If you want to change font of your choice just download your font and save i
    ```bash
    python main.py
    ```
+
+<img width="1919" height="1028" alt="Screenshot 2025-07-28 193149" src="https://github.com/user-attachments/assets/bf4ca6ad-b9ee-48d8-a3ed-ab518f4820cc" />
