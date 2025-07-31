@@ -1,19 +1,11 @@
 # OtakuWalL – Smart Dynamic Anime Wallpaper Genarator
 
 OtakuWalL is a smart and lightweight Python desktop wallpaper generator that:
-- Fetches HD anime wallpapers ❤️‍🔥(You can even get your favorite one's only or random Too)
-- Gets Hourly quote for Motivation 🤩(From your favorite anime also or random based on api)
-- Displays dynamic time-based greetings ⏰
-- Shows current weather and temperature ☁️
+- Fetches HD anime wallpapers (You can even get your favorite one's only or random Too)
+- Gets Hourly quote for Motivation (From your favorite anime also or random based on api)
+- Displays dynamic time-based greetings 
+- Shows current weather and temperature
 
-
-## Features
-
-- 🖼️ Dynamic Anime Wallpapers
-- 🤩 Hourly Motivational quotes
-- ☁️ Weather & Temperature Display 
-- ⏰ Time-of-day Based Greetings
-- 💬 Font & Style Customizations
 
 ## 🔧 Setup Instructions
 
