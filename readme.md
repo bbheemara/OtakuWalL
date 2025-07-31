@@ -1,8 +1,8 @@
 # OtakuWalL – Smart Dynamic Anime Wallpaper Genarator
 
 OtakuWalL is a smart desktop wallpaper generator that:
-- Fetches HD anime wallpapers (You can even get your favorite one's only or random Too)
-- Gets Hourly quote for Motivation (From your favorite anime also or random based on api)
+- Fetches HD anime wallpapers (You can even get your favorite anime one's or random Too)
+- Gets Hourly quote for Motivation (From your favorite anime or random based on api)
 - Displays dynamic time-based greetings 
 - Shows current weather and temperature
 
