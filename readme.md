@@ -19,12 +19,19 @@ cd OtakuWalL
 pip install -r requirements.txt
 ```
 3. Change according to your need
-In main.py change anime_name='your fav anime' 
-also change city='your_city' for weather(Sign up for https://openweathermap.org/ and get your api key it's free and paste in .env)
-and If you want to change font of your choice just download your font and save in assets/fonts folder then in main.py FONT_PATH = 'assets/fonts/<your_font>'
+ 
+   In main.py change
+   
+   anime_name='your fav anime' (optional)
+   
+   also change
+   
+   city='your_city' for weather (Sign up for https://openweathermap.org/ and get your api key it's free and paste in .env)
+   
+   and If you want to change font of your choice just download your font and save in assets/fonts folder then in main.py FONT_PATH = 'assets/fonts/<your_font>'
 
 
-4. Run the app and schedule the script 
+5. Run the app and schedule the script 
    ```bash
    python main.py
    ```
