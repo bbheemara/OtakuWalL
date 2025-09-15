@@ -8,6 +8,7 @@ from api.fetch_quote import movie_quotes
 from api.fetch_quote import nature_quote
 from dotenv import load_dotenv
 from io import BytesIO
+import random
 
 def set_wallpaper(type="Anime",quote_type=None,category="Anime",city="Mumbai",use_time_greetings=True):
         load_dotenv()
@@ -22,22 +23,67 @@ def set_wallpaper(type="Anime",quote_type=None,category="Anime",city="Mumbai",us
 
 
         try:
-            if quote_type=="Select":
+            if quote_type=="None":
                  quote = None
                  anime_name = anime_name
                  character = character
-            elif quote_type == "Anime Quotes":
+            elif type == "Anime":
                 quote, anime_name, character = quotes()
-            elif quote_type == "Movie Quotes":
-                quote, anime_name,character = movie_quotes()
-            elif quote_type == "Famouse Quotes":
+            elif type == "Movie":
+                quote, movie_name,character = movie_quotes()
+            elif type == "Nature":
                  quote, character = nature_quote()
         except Exception as e:
             print("Failed to fetch quote:", e)
-            quote = "I'm not gonna run away, I never go back on my word! That's my nindo: my ninja way!"
-            anime_name = "Naruto"
-            character = "Naruto Uzumaki"
 
+            if type == "Anime":
+                quote = "I'm not gonna run away, I never go back on my word! That's my nindo: my ninja way!"
+                anime_name = "Naruto"
+                character = "Naruto Uzumaki" 
+
+            elif type == "Movie" or movie_name:
+                quotes_list = ["I'm gonna make him an offer he can't refuse. — Vito Corleone",
+
+                        "May the Force be with you. — Han Solo",
+
+                        "Here's looking at you, kid. — Rick Blaine",
+
+                        "You talkin' to me? — Travis Bickle",
+
+                        "I'll be back — The Terminator (T-800)",
+
+                        "You can't handle the truth! — Col. Nathan R. Jessep",
+
+                        "Frankly, my dear, I don't give a damn. — Rhett Butler",
+
+                        "I see dead people. — Cole Sear",
+
+                        "Here's Johnny! — Jack Torrance",
+
+                        "Life is like a box of chocolates. You never know what you're gonna get. — Forrest Gump"
+                                        ]
+                movies = [
+                "The Godfather",
+                "The Shawshank Redemption",
+                "The Dark Knight",
+                "Pulp Fiction",
+                "The Lord of the Rings: The Return of the King",
+                "Star Wars: Episode IV - A New Hope",
+                "Schindler's List",
+                "Forrest Gump",
+                "Inception",
+                "Casablanca", 
+]
+                quote = random.choice(quotes_list)
+
+
+                movie_name = random.choice(movies)
+                character = ""
+
+            elif quote_type == "None":
+                quote = ""
+                anime_name = ""
+                character = "" 
         # anime_name=anime_name
 
 
@@ -55,12 +101,12 @@ def set_wallpaper(type="Anime",quote_type=None,category="Anime",city="Mumbai",us
 
 
         def fetch_wallpaper():
-            if quote_type == "Famouse Quotes" or type == "Nature":
+            if  type == "Nature":
                 url = f'https://wallhaven.cc/api/v1/search?q=nature&categories=nature&purity=100&sorting=random&resolutions=1920x1080&ratios=16x9'
-            elif  quote_type == "Anime Quotes" or type == "Anime":
+            elif   type == "Anime":
                 url = f'https://wallhaven.cc/api/v1/search?q={anime_name}&categories=anime&purity=100&sorting=random&resolutions=1920x1080&ratios=16x9'
-            elif quote_type == "Movie Quotes" or type == "Movie":
-                url = f'https://wallhaven.cc/api/v1/search?q={anime_name}&categories=movie&purity=100&sorting=random&resolutions=1920x1080&ratios=16x9'
+            elif type == "Movie":
+                url = f'https://wallhaven.cc/api/v1/search?q={movie_name}&categories=movie&purity=100&sorting=random&resolutions=1920x1080&ratios=16x9'
 
             resp = requests.get(url)
             data = resp.json()
@@ -128,7 +174,7 @@ def set_wallpaper(type="Anime",quote_type=None,category="Anime",city="Mumbai",us
         if use_time_greetings == True:
           draw_wrapped_text(draw, message, (100, 40), font, image.width - 60)
         
-        if quote_type == "Select":
+        if quote_type == "None":
             quote_text = ""
         else: 
 
