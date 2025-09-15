@@ -4,10 +4,12 @@ import requests
 from PIL import Image, ImageDraw, ImageFont 
 from greeting.time_greeting import getMessage
 from api.fetch_quote import quotes
+from api.fetch_quote import movie_quotes
+from api.fetch_quote import nature_quote
 from dotenv import load_dotenv
 from io import BytesIO
 
-def set_wallpaper(type="Anime",category="Anime",city="Mumbai",use_time_greetings=True):
+def set_wallpaper(type="Anime",quote_type=None,category="Anime",city="Mumbai",use_time_greetings=True):
         load_dotenv()
 
         SPI_SETDESKWALLPAPER = 20
@@ -20,7 +22,16 @@ def set_wallpaper(type="Anime",category="Anime",city="Mumbai",use_time_greetings
 
 
         try:
-            quote, anime_name, character = quotes()
+            if quote_type=="Select":
+                 quote = None
+                 anime_name = anime_name
+                 character = character
+            elif quote_type == "Anime Quotes":
+                quote, anime_name, character = quotes()
+            elif quote_type == "Movie Quotes":
+                quote, anime_name,character = movie_quotes()
+            elif quote_type == "Famouse Quotes":
+                 quote, character = nature_quote()
         except Exception as e:
             print("Failed to fetch quote:", e)
             quote = "I'm not gonna run away, I never go back on my word! That's my nindo: my ninja way!"
@@ -44,7 +55,13 @@ def set_wallpaper(type="Anime",category="Anime",city="Mumbai",use_time_greetings
 
 
         def fetch_wallpaper():
-            url = f'https://wallhaven.cc/api/v1/search?q={type}&categories={category}&purity=100&sorting=random&resolutions=1920x1080&ratios=16x9'
+            if quote_type == "Famouse Quotes" or type == "Nature":
+                url = f'https://wallhaven.cc/api/v1/search?q=nature&categories=nature&purity=100&sorting=random&resolutions=1920x1080&ratios=16x9'
+            elif  quote_type == "Anime Quotes" or type == "Anime":
+                url = f'https://wallhaven.cc/api/v1/search?q={anime_name}&categories=anime&purity=100&sorting=random&resolutions=1920x1080&ratios=16x9'
+            elif quote_type == "Movie Quotes" or type == "Movie":
+                url = f'https://wallhaven.cc/api/v1/search?q={anime_name}&categories=movie&purity=100&sorting=random&resolutions=1920x1080&ratios=16x9'
+
             resp = requests.get(url)
             data = resp.json()
             if 'data' in data and len(data['data']) > 0:
@@ -108,11 +125,14 @@ def set_wallpaper(type="Anime",category="Anime",city="Mumbai",use_time_greetings
         draw = ImageDraw.Draw(image)
         font = ImageFont.truetype(FONT_PATH, 50)
 
+        if use_time_greetings == True:
+          draw_wrapped_text(draw, message, (100, 40), font, image.width - 60)
+        
+        if quote_type == "Select":
+            quote_text = ""
+        else: 
 
-        draw_wrapped_text(draw, message, (100, 40), font, image.width - 60)
-
-
-        quote_text = f'"{quote}"\n- {character}'
+            quote_text = f'"{quote}"\n- {character}'
         quote_lines = wrap_text(quote_text, font, image.width - 100, draw)
 
 
@@ -133,7 +153,7 @@ def set_wallpaper(type="Anime",category="Anime",city="Mumbai",use_time_greetings
 
         image = image.convert('RGBA') 
         API_KEY=os.environ.get('api')
-        city='Mumbai'
+        city=city
         url = f'https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric'
         resp_w=requests.get(url)
         data_w=resp_w.json()

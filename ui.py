@@ -37,7 +37,7 @@ def wallpaper_set():
     city_name = city_input.get()
     is_greetings = time_based_greetings_label.get()
 
-    set_wallpaper(type=wallpaper_type,city=city_name,use_time_greetings=is_greetings)
+    set_wallpaper(type=wallpaper_type,category=wallpaper_type,quote_type=quote_type,city=city_name,use_time_greetings=is_greetings)
     
 
 Header = ctk.CTkLabel(container_Type_wallpaper_label,text='OtakuWalL',font=("Oswald Light", 24))
