@@ -9,8 +9,11 @@ from api.fetch_quote import nature_quote
 from dotenv import load_dotenv
 from io import BytesIO
 import random
+from screeninfo import get_monitors
+import winreg
 
-def set_wallpaper(type="Anime",quote_type=None,category="Anime",city="Mumbai",use_time_greetings=True):
+
+def set_wallpaper(type="Anime",quote_type=None,custom_quote=None,custom_path=None,category="Anime",city="Mumbai",use_time_greetings=True):
         load_dotenv()
 
         SPI_SETDESKWALLPAPER = 20
@@ -20,28 +23,37 @@ def set_wallpaper(type="Anime",quote_type=None,category="Anime",city="Mumbai",us
         font=ImageFont.truetype(FONT_PATH,size=50)
         os.makedirs(SAVE_DIR, exist_ok=True)
         message = getMessage()
-
-
+        movie_name = ""
+        anime_name = ""
+        character = ""
+        quote = ""
+        downloaded_path=""
+        monitor = get_monitors()[0]
+        screen_w = monitor.width
+        screen_h = monitor.height
         try:
-            if quote_type=="None":
-                 quote = None
-                 anime_name = anime_name
-                 character = character
+            if quote_type == "None":
+                quote = ""
+                anime_name = anime_name
+                character = character
             elif type == "Anime":
                 quote, anime_name, character = quotes()
             elif type == "Movie":
-                quote, movie_name,character = movie_quotes()
-            elif type == "Nature":
-                 quote, character = nature_quote()
+                quote, movie_name, character = movie_quotes()
+            elif type == "Nature":  
+                quote, character = nature_quote()
+            elif type == "custom":
+                quote = custom_quote if custom_quote else ""
+                character = ""
+                anime_name = ""
         except Exception as e:
             print("Failed to fetch quote:", e)
-
             if type == "Anime":
                 quote = "I'm not gonna run away, I never go back on my word! That's my nindo: my ninja way!"
                 anime_name = "Naruto"
-                character = "Naruto Uzumaki" 
+                character = "Naruto Uzumaki"
 
-            elif type == "Movie" or movie_name:
+            elif type == "Movie":
                 quotes_list = ["I'm gonna make him an offer he can't refuse. — Vito Corleone",
 
                         "May the Force be with you. — Han Solo",
@@ -85,8 +97,30 @@ def set_wallpaper(type="Anime",quote_type=None,category="Anime",city="Mumbai",us
                 anime_name = ""
                 character = "" 
         # anime_name=anime_name
+        def set_wallpaper_style_fit():
+            reg_path = r"Control Panel\Desktop"
+            try:
+                reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, reg_path, 0, winreg.KEY_SET_VALUE)
+                winreg.SetValueEx(reg_key, "WallpaperStyle", 0, winreg.REG_SZ, "6")
+                winreg.SetValueEx(reg_key, "TileWallpaper", 0, winreg.REG_SZ, "0")
+                winreg.CloseKey(reg_key)
 
+            except Exception as e:
+                print("Failed to set wallpaper style:", e)
 
+        def resize_custom_img(image, max_w, max_h):
+            image_ratio = image.width / image.height
+            screen_ratio = max_w/max_h
+
+            if image_ratio > screen_ratio:
+                new_width = max_w
+                new_height = int(max_w / image_ratio) 
+            else:
+                new_height = max_h
+                new_width = int(max_h * image_ratio)    
+            return image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+            
+        
         def download_wallpaper(image_url, filename=WALLPAPER_FILENAME, save_dir=SAVE_DIR):
             response = requests.get(image_url)
             if response.status_code == 200:
@@ -103,24 +137,53 @@ def set_wallpaper(type="Anime",quote_type=None,category="Anime",city="Mumbai",us
         def fetch_wallpaper():
             if  type == "Nature":
                 url = f'https://wallhaven.cc/api/v1/search?q=nature&categories=nature&purity=100&sorting=random&resolutions=1920x1080&ratios=16x9'
-            elif   type == "Anime":
-                url = f'https://wallhaven.cc/api/v1/search?q={anime_name}&categories=anime&purity=100&sorting=random&resolutions=1920x1080&ratios=16x9'
-            elif type == "Movie":
-                url = f'https://wallhaven.cc/api/v1/search?q={movie_name}&categories=movie&purity=100&sorting=random&resolutions=1920x1080&ratios=16x9'
-
-            resp = requests.get(url)
-            data = resp.json()
-            if 'data' in data and len(data['data']) > 0:
-                image_url = data['data'][0]['path']
-                return download_wallpaper(image_url)
-            else:
-                print("No wallpaper found:Retrting")
+                
                 resp = requests.get(url)
                 data = resp.json()
                 if 'data' in data and len(data['data']) > 0:
                     image_url = data['data'][0]['path']
                     return download_wallpaper(image_url)
+                else:
+                    print("No wallpaper found:Retrting")
+                    resp = requests.get(url)
+                    data = resp.json()
+                    if 'data' in data and len(data['data']) > 0:
+                        image_url = data['data'][0]['path']
+                        return download_wallpaper(image_url)
+                    
+            elif   type == "Anime":
+                url = f'https://wallhaven.cc/api/v1/search?q={anime_name}&categories=anime&purity=100&sorting=random&resolutions=1920x1080&ratios=16x9'
                 
+                resp = requests.get(url)
+                data = resp.json()
+                if 'data' in data and len(data['data']) > 0:
+                    image_url = data['data'][0]['path']
+                    return download_wallpaper(image_url)
+                else:
+                    print("No wallpaper found:Retrting")
+                    resp = requests.get(url)
+                    data = resp.json()
+                    if 'data' in data and len(data['data']) > 0:
+                        image_url = data['data'][0]['path']
+                        return download_wallpaper(image_url)
+                
+            elif type == "Movie":
+                url = f'https://wallhaven.cc/api/v1/search?q={movie_name}&categories=movie&purity=100&sorting=random&resolutions=1920x1080&ratios=16x9'
+
+                resp = requests.get(url)
+                data = resp.json()
+                if 'data' in data and len(data['data']) > 0:
+                    image_url = data['data'][0]['path']
+                    return download_wallpaper(image_url)
+                else:
+                    print("No wallpaper found:Retrting")
+                    resp = requests.get(url)
+                    data = resp.json()
+                    if 'data' in data and len(data['data']) > 0:
+                        image_url = data['data'][0]['path']
+                        return download_wallpaper(image_url)
+                    
+           
 
 
         def wrap_text(text, font, max_width, draw):
@@ -162,40 +225,50 @@ def set_wallpaper(type="Anime",quote_type=None,category="Anime",city="Mumbai",us
                 y += line_height + 5
 
 
-        downloaded_path = fetch_wallpaper()
-        if not downloaded_path:
-            exit()
+        if custom_path:
+            image = Image.open(custom_path).convert("RGB").copy()
 
 
-        image = Image.open(downloaded_path).convert("RGB")
+
+
+
+        else:
+            downloaded_path = fetch_wallpaper()
+            if not downloaded_path:
+               exit()
+            image = Image.open(downloaded_path).convert("RGB")
+
         draw = ImageDraw.Draw(image)
         font = ImageFont.truetype(FONT_PATH, 50)
 
         if use_time_greetings == True:
           draw_wrapped_text(draw, message, (100, 40), font, image.width - 60)
+                
         
-        if quote_type == "None":
+        if type == "custom":
+            quote_text = custom_quote if custom_quote else ""
+        elif quote_type == "None" or quote_type is None:
             quote_text = ""
-        else: 
+        else:
+            if quote and character:
+                quote_text = f'"{quote}"\n- {character}'
+            elif quote:
+                quote_text = f'"{quote}"'
+            else:
+                quote_text = ""
 
-            quote_text = f'"{quote}"\n- {character}'
-        quote_lines = wrap_text(quote_text, font, image.width - 100, draw)
-
-
-        line_heights = [draw.textbbox((0, 0), line, font=font)[3] - draw.textbbox((0, 0), line, font=font)[1] for line in quote_lines]
-        total_quote_height = sum(line_heights) + 5 * (len(quote_lines) - 1)
-
-        start_y =  image.height - total_quote_height - 100
-
-
-
-
-        for i, line in enumerate(quote_lines):
-            line_bbox = draw.textbbox((0, 0), line, font=font)
-            line_width = line_bbox[2] - line_bbox[0]
-            x = (image.width - line_width) // 2
-            draw_outline_text(draw, line, (x, start_y), font)
-            start_y += line_heights[i] + 5            
+        if quote_text.strip():
+            quote_lines = wrap_text(quote_text, font, image.width - 100, draw)
+            line_heights = [draw.textbbox((0,0), line, font=font)[3] - draw.textbbox((0,0), line, font=font)[1] for line in quote_lines]
+            total_quote_height = sum(line_heights) + 5 * (len(quote_lines) - 1)
+            start_y = image.height - total_quote_height - 100
+            for i, line in enumerate(quote_lines):
+                line_bbox = draw.textbbox((0, 0), line, font=font)
+                line_width = line_bbox[2] - line_bbox[0]
+                x = (image.width - line_width) // 2
+                draw_outline_text(draw, line, (x, start_y), font)
+                start_y += line_heights[i] + 5
+         
 
         image = image.convert('RGBA') 
         API_KEY=os.environ.get('api')
@@ -215,60 +288,151 @@ def set_wallpaper(type="Anime",quote_type=None,category="Anime",city="Mumbai",us
 
             temp=temp
             temp_text=f'{temp}°C'
-            if weather_state=='Clouds':
-            
-            #    weather = Image.open('assets/clouds.png').convert("RGBA") 
+            if weather_state == 'Thunderstorm':
                 icon_img = icon_img.resize((50, 50))
-                alpha =200
-                icon_img.putalpha(alpha)
+                icon_img.putalpha(200)
                 draw = ImageDraw.Draw(image)
-                image.paste(icon_img, (image.width-200, 50), icon_img)  
+                image.paste(icon_img, (image.width-200, 50), icon_img)
                 draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
-                draw_wrapped_text(draw,temp_text, (image.width-400,50),font,image.width-60)
+                draw_wrapped_text(draw, temp_text, (image.width-400,50), font, image.width-60)
 
-            elif weather_state=='Clear':
+            elif weather_state == 'Drizzle':
                 icon_img = icon_img.resize((50, 50))
-                alpha =200
-                icon_img.putalpha(alpha)
+                icon_img.putalpha(200)
                 draw = ImageDraw.Draw(image)
-                image.paste(icon_img, (image.width-200, 50), icon_img)  
+                image.paste(icon_img, (image.width-200, 50), icon_img)
                 draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
-                draw_wrapped_text(draw,temp_text, (image.width-400,50),font,image.width-60)
+                draw_wrapped_text(draw, temp_text, (image.width-400,50), font, image.width-60)
 
-            elif weather_state=='Rain':
+            elif weather_state == 'Rain':
                 icon_img = icon_img.resize((50, 50))
-                alpha =200
-                icon_img.putalpha(alpha)
+                icon_img.putalpha(200)
                 draw = ImageDraw.Draw(image)
-                image.paste(icon_img, (image.width-200, 50), icon_img)  
+                image.paste(icon_img, (image.width-200, 50), icon_img)
                 draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
-                draw_wrapped_text(draw,temp_text, (image.width-400,50),font,image.width-60)
+                draw_wrapped_text(draw, temp_text, (image.width-400,50), font, image.width-60)
 
+            elif weather_state == 'Snow':
+                icon_img = icon_img.resize((50, 50))
+                icon_img.putalpha(200)
+                draw = ImageDraw.Draw(image)
+                image.paste(icon_img, (image.width-200, 50), icon_img)
+                draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+                draw_wrapped_text(draw, temp_text, (image.width-400,50), font, image.width-60)
 
-            elif weather_state=='Drizzle':
-                    icon_img = icon_img.resize((50, 50))
-                    alpha =200
-                    icon_img.putalpha(alpha)
-                    draw = ImageDraw.Draw(image)
-                    image.paste(icon_img, (image.width-200, 50), icon_img)  
-                    draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
-                    draw_wrapped_text(draw,temp_text, (image.width-400,50),font,image.width-60)
+            elif weather_state == 'Mist':
+                icon_img = icon_img.resize((50, 50))
+                icon_img.putalpha(200)
+                draw = ImageDraw.Draw(image)
+                image.paste(icon_img, (image.width-200, 50), icon_img)
+                draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+                draw_wrapped_text(draw, temp_text, (image.width-400,50), font, image.width-60)
 
-            elif weather_state=='Snow':
-                        icon_img = icon_img.resize((50, 50))
-                        alpha =200
-                        icon_img.putalpha(alpha)
-                        draw = ImageDraw.Draw(image)
-                        image.paste(icon_img, (image.width-200, 50), icon_img)  
-                        draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
-                        draw_wrapped_text(draw,temp_text, (image.width-400,50),font,image.width-60)
+            elif weather_state == 'Smoke':
+                icon_img = icon_img.resize((50, 50))
+                icon_img.putalpha(200)
+                draw = ImageDraw.Draw(image)
+                image.paste(icon_img, (image.width-200, 50), icon_img)
+                draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+                draw_wrapped_text(draw, temp_text, (image.width-400,50), font, image.width-60)
+
+            elif weather_state == 'Haze':
+                icon_img = icon_img.resize((50, 50))
+                icon_img.putalpha(200)
+                draw = ImageDraw.Draw(image)
+                image.paste(icon_img, (image.width-200, 50), icon_img)
+                draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+                draw_wrapped_text(draw, temp_text, (image.width-400,50), font, image.width-60)
+
+            elif weather_state == 'Dust':
+                icon_img = icon_img.resize((50, 50))
+                icon_img.putalpha(200)
+                draw = ImageDraw.Draw(image)
+                image.paste(icon_img, (image.width-200, 50), icon_img)
+                draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+                draw_wrapped_text(draw, temp_text, (image.width-400,50), font, image.width-60)
+
+            elif weather_state == 'Fog':
+                icon_img = icon_img.resize((50, 50))
+                icon_img.putalpha(200)
+                draw = ImageDraw.Draw(image)
+                image.paste(icon_img, (image.width-200, 50), icon_img)
+                draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+                draw_wrapped_text(draw, temp_text, (image.width-400,50), font, image.width-60)
+
+            elif weather_state == 'Sand':
+                icon_img = icon_img.resize((50, 50))
+                icon_img.putalpha(200)
+                draw = ImageDraw.Draw(image)
+                image.paste(icon_img, (image.width-200, 50), icon_img)
+                draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+                draw_wrapped_text(draw, temp_text, (image.width-400,50), font, image.width-60)
+
+            elif weather_state == 'Ash':
+                icon_img = icon_img.resize((50, 50))
+                icon_img.putalpha(200)
+                draw = ImageDraw.Draw(image)
+                image.paste(icon_img, (image.width-200, 50), icon_img)
+                draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+                draw_wrapped_text(draw, temp_text, (image.width-400,50), font, image.width-60)
+
+            elif weather_state == 'Squall':
+                icon_img = icon_img.resize((50, 50))
+                icon_img.putalpha(200)
+                draw = ImageDraw.Draw(image)
+                image.paste(icon_img, (image.width-200, 50), icon_img)
+                draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+                draw_wrapped_text(draw, temp_text, (image.width-400,50), font, image.width-60)
+
+            elif weather_state == 'Tornado':
+                icon_img = icon_img.resize((50, 50))
+                icon_img.putalpha(200)
+                draw = ImageDraw.Draw(image)
+                image.paste(icon_img, (image.width-200, 50), icon_img)
+                draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+                draw_wrapped_text(draw, temp_text, (image.width-400,50), font, image.width-60)
+
+            elif weather_state == 'Clear':
+                icon_img = icon_img.resize((50, 50))
+                icon_img.putalpha(200)
+                draw = ImageDraw.Draw(image)
+                image.paste(icon_img, (image.width-200, 50), icon_img)
+                draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+                draw_wrapped_text(draw, temp_text, (image.width-400,50), font, image.width-60)
+
+            elif weather_state == 'Clouds':
+                icon_img = icon_img.resize((50, 50))
+                icon_img.putalpha(200)
+                draw = ImageDraw.Draw(image)
+                image.paste(icon_img, (image.width-200, 50), icon_img)
+                draw_wrapped_text(draw, weather_state, (image.width - 400 + 50, 100), font, image.width - 60)
+                draw_wrapped_text(draw, temp_text, (image.width-400,50), font, image.width-60)
 
 
         else:
             print("Error:", data_w['message'])
 
+        if image.mode == 'RGBA':
+            image = image.convert('RGB')
 
-        bmp_path = downloaded_path.replace('.jpg', '.bmp')
-        image.save(bmp_path, 'BMP')
-        ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, os.path.abspath(bmp_path), 3)
-        pass
+        image = resize_custom_img(image, screen_w, screen_h)
+
+        if custom_path:
+            dir_path = os.path.dirname(custom_path)
+            base_name = os.path.basename(custom_path)
+            name_without_ext = os.path.splitext(base_name)[0]
+            save_path = os.path.join(dir_path, f"{name_without_ext}_wallpaper.bmp")
+            
+            set_wallpaper_style_fit()
+   
+            image.save(save_path, 'BMP')
+            ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, os.path.abspath(save_path), 3)
+
+        else:
+            bmp_path = os.path.join(SAVE_DIR, 'wallpaper.bmp')
+            
+            image.save(bmp_path, 'BMP')
+            ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, os.path.abspath(bmp_path), 3)
+
+            print(f"DEBUG: type={type}, quote_type={quote_type}, custom_quote={custom_quote}")
+            print(f"DEBUG: Final quote_text='{quote_text}'")
