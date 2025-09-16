@@ -3,6 +3,8 @@ from customtkinter import filedialog
 from tkinter import messagebox
 import os 
 from main import set_wallpaper
+import threading
+
 ctk.set_appearance_mode('system')
 ctk.set_default_color_theme('green')
 root = ctk.CTk()
@@ -32,23 +34,50 @@ container_city_input_label.pack(padx=20,pady=10)
 container_time_based_greetings_label = ctk.CTkFrame(frame,fg_color='transparent')
 container_time_based_greetings_label.pack(padx=20,pady=10)
 
+selected_custom_image_path = None 
 
 
-ctk.FontManager.load_font(r"assets/fonts/font1.ttf")
+ctk.FontManager.load_font(r"assets/fonts/font1.ttf") 
+
+# learnt about threading from ai, implemented it and now ui def feels like responsive. yay! 
+def wallpaper_set_resp():
+    if optionmenu_wallpaper.get() == "custom" and not selected_custom_image_path:
+        messagebox.showerror("hmm", "Upload an image first! lol")
+        return
+    if optionmenu_wallpaper.get() == "Select":
+        messagebox.showerror("hmm", "Select the type of wallpaper!!, first")
+        return
+
+    btn.configure(state = "normal", text = "Cancel") 
+    thread = threading.Thread(target=wallpaper_set) 
+    thread.daemon = True 
+    thread.start()  
 
 def wallpaper_set():
-    wallpaper_type = optionmenu_wallpaper.get()
-    quote_type = optionmenu_quote.get()
-    city_name = city_input.get()
-    is_greetings = time_based_greetings_label.get()
-    custom_quote = custom_quote_input.get()
-    if wallpaper_type == "custom":
-       set_wallpaper(type=wallpaper_type,custom_path = selected_custom_image_path, custom_quote =custom_quote, category=wallpaper_type,quote_type=quote_type,city=city_name,use_time_greetings=is_greetings)
-    else:
-       set_wallpaper(type=wallpaper_type,custom_path =None,custom_quote=None,category=wallpaper_type,quote_type=quote_type,city=city_name,use_time_greetings=is_greetings)
-    
+    try:
+        wallpaper_type = optionmenu_wallpaper.get()
+        quote_type = optionmenu_quote.get()
+        city_name = city_input.get()
+        is_greetings = time_based_greetings_label.get()
+        custom_quote = custom_quote_input.get()
+        if wallpaper_type == "custom":
+           set_wallpaper(type=wallpaper_type,custom_path = selected_custom_image_path, custom_quote =custom_quote, category=wallpaper_type,quote_type=quote_type,city=city_name,use_time_greetings=is_greetings)
+        else:
+           set_wallpaper(type=wallpaper_type,custom_path =None,custom_quote=None,category=wallpaper_type,quote_type=quote_type,city=city_name,use_time_greetings=is_greetings)
+        
+        root.after(0, lambda:on_finish_success())
 
-    
+    except Exception as e:
+        root.after(0, lambda:on_finish_error(str(e)))
+
+def on_finish_success():
+    btn.configure(text = 'Set!!', state = "normal" )
+    messagebox.showinfo("Success", "Wallpaper Set Sucessfully!!")
+
+def on_finish_error(e):
+    btn.configure(text = 'Set!!', state = "normal" )
+    messagebox.showerror("Error", f'Failed to set wallpaper:\n{e}')
+
 Header = ctk.CTkLabel(container_Type_wallpaper_label,text='OtakuWalL',font=("Oswald Light", 24))
 Header.pack()
 
@@ -63,6 +92,7 @@ def options_menu(choice):
         time_based_greetings_label.configure(state ='disabled' )
         optionmenu_quote.configure(state = 'disabled')
         city_input.configure(state = 'disabled')
+
         # if   file_name_label:
         #      messagebox.showinfo('Uploaded', 'Image uploaded') 
              
@@ -89,6 +119,7 @@ def ImageOpen():
             filename = os.path.basename(selected_custom_image_path)
             file_name_label.configure(text=filename)
             messagebox.showinfo('Uploaded', f'Image {filename} uploaded')
+            btn.configure(state='normal') 
                 
 
            
@@ -129,14 +160,10 @@ city_label.pack(side = 'left')
 city_input = ctk.CTkEntry(container_city_input_label,font=("Oswald ExtraLight",15))
 city_input.pack(side='left', padx=5)
 
-
-
-
-
 time_based_greetings_label = ctk.CTkCheckBox(container_time_based_greetings_label,text='Time based greetings',font=("Oswald ExtraLight", 15))
 time_based_greetings_label.pack(pady=5)
 
-btn = ctk.CTkButton(master=frame,text='Set!!',command=wallpaper_set)
+btn = ctk.CTkButton(master=frame,text='Set!!',command=wallpaper_set_resp)
 btn.pack(padx=20,pady=30)
 
 root.mainloop()

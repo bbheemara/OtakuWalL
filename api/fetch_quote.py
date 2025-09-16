@@ -5,7 +5,7 @@ import random
 
 def quotes():
     url= 'https://api.animechan.io/v1/quotes/random'
-    resp=requests.get(url)
+    resp=requests.get(url,timeout=3)
     data=resp.json()
     quote=data['data']['content']
     anime_name=data['data']['anime']['name']
@@ -14,7 +14,7 @@ def quotes():
 
 def movie_quotes():
     url = 'https://quoteapi.pythonanywhere.com/quotes/'
-    resp = requests.get(url)
+    resp = requests.get(url,timeout=3)
 
     if resp.status_code == 200:
         data = resp.json()
@@ -41,7 +41,7 @@ def movie_quotes():
 
 def nature_quote():
     url = 'https://zenquotes.io/api/quotes/'
-    res = requests.get(url)
+    res = requests.get(url,timeout=3)
 
     if res.status_code == 200:
         data = res.json()

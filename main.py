@@ -109,6 +109,10 @@ def set_wallpaper(type="Anime",quote_type=None,custom_quote=None,custom_path=Non
                 print("Failed to set wallpaper style:", e)
 
         def resize_custom_img(image, max_w, max_h):
+            if image.width * image.height < 500*500:  
+               resample_method = Image.Resampling.BILINEAR  
+            else:
+               resample_method = Image.Resampling.LANCZOS   
             image_ratio = image.width / image.height
             screen_ratio = max_w/max_h
 
@@ -118,7 +122,7 @@ def set_wallpaper(type="Anime",quote_type=None,custom_quote=None,custom_path=Non
             else:
                 new_height = max_h
                 new_width = int(max_h * image_ratio)    
-            return image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+            return image.resize((new_width, new_height), resample_method)
             
         
         def download_wallpaper(image_url, filename=WALLPAPER_FILENAME, save_dir=SAVE_DIR):
@@ -138,14 +142,15 @@ def set_wallpaper(type="Anime",quote_type=None,custom_quote=None,custom_path=Non
             if  type == "Nature":
                 url = f'https://wallhaven.cc/api/v1/search?q=nature&categories=nature&purity=100&sorting=random&resolutions=1920x1080&ratios=16x9'
                 
-                resp = requests.get(url)
+                resp = requests.get(url,timeout=5
+                                    )
                 data = resp.json()
                 if 'data' in data and len(data['data']) > 0:
                     image_url = data['data'][0]['path']
                     return download_wallpaper(image_url)
                 else:
                     print("No wallpaper found:Retrting")
-                    resp = requests.get(url)
+                    resp = requests.get(url,timeout=5)
                     data = resp.json()
                     if 'data' in data and len(data['data']) > 0:
                         image_url = data['data'][0]['path']
@@ -154,14 +159,14 @@ def set_wallpaper(type="Anime",quote_type=None,custom_quote=None,custom_path=Non
             elif   type == "Anime":
                 url = f'https://wallhaven.cc/api/v1/search?q={anime_name}&categories=anime&purity=100&sorting=random&resolutions=1920x1080&ratios=16x9'
                 
-                resp = requests.get(url)
+                resp = requests.get(url,timeout=5)
                 data = resp.json()
                 if 'data' in data and len(data['data']) > 0:
                     image_url = data['data'][0]['path']
                     return download_wallpaper(image_url)
                 else:
                     print("No wallpaper found:Retrting")
-                    resp = requests.get(url)
+                    resp = requests.get(url,timeout=5)
                     data = resp.json()
                     if 'data' in data and len(data['data']) > 0:
                         image_url = data['data'][0]['path']
@@ -170,14 +175,14 @@ def set_wallpaper(type="Anime",quote_type=None,custom_quote=None,custom_path=Non
             elif type == "Movie":
                 url = f'https://wallhaven.cc/api/v1/search?q={movie_name}&categories=movie&purity=100&sorting=random&resolutions=1920x1080&ratios=16x9'
 
-                resp = requests.get(url)
+                resp = requests.get(url,timeout=5)
                 data = resp.json()
                 if 'data' in data and len(data['data']) > 0:
                     image_url = data['data'][0]['path']
                     return download_wallpaper(image_url)
                 else:
                     print("No wallpaper found:Retrting")
-                    resp = requests.get(url)
+                    resp = requests.get(url,timeout=5)
                     data = resp.json()
                     if 'data' in data and len(data['data']) > 0:
                         image_url = data['data'][0]['path']
@@ -274,7 +279,7 @@ def set_wallpaper(type="Anime",quote_type=None,custom_quote=None,custom_path=Non
         API_KEY=os.environ.get('api')
         city=city
         url = f'https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric'
-        resp_w=requests.get(url)
+        resp_w=requests.get(url,timeout=5)
         data_w=resp_w.json()
 
         if resp_w.status_code==200:
@@ -282,7 +287,7 @@ def set_wallpaper(type="Anime",quote_type=None,custom_quote=None,custom_path=Non
             weather_state=data_w['weather'][0]['main']
             icon_code=data_w['weather'][0]['icon']
             icon_url = f"https://openweathermap.org/img/wn/{icon_code}@2x.png"
-            resp=requests.get(icon_url)
+            resp=requests.get(icon_url,timeout=2)
             icon_img = Image.open(BytesIO(resp.content)).convert("RGBA")
             
 
@@ -434,5 +439,3 @@ def set_wallpaper(type="Anime",quote_type=None,custom_quote=None,custom_path=Non
             image.save(bmp_path, 'BMP')
             ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, os.path.abspath(bmp_path), 3)
 
-            print(f"DEBUG: type={type}, quote_type={quote_type}, custom_quote={custom_quote}")
-            print(f"DEBUG: Final quote_text='{quote_text}'")
