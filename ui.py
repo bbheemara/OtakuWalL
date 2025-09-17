@@ -25,11 +25,15 @@ container_Type_wallpaper_label_img.forget()
 container_Type_quote_label = ctk.CTkFrame(frame,fg_color='transparent')
 container_Type_quote_label.pack(padx=20,pady=10)
 
+container_time_based_schedule = ctk.CTkFrame(frame,fg_color='transparent')
+container_time_based_schedule.pack(padx = 20, pady = 10)
+
 container_custom_quote_input_label = ctk.CTkFrame(frame,fg_color='transparent')
 container_custom_quote_input_label.pack(padx = 20, pady = 10)
 
 container_city_input_label = ctk.CTkFrame(frame,fg_color='transparent')
 container_city_input_label.pack(padx=20,pady=10)
+
 
 container_time_based_greetings_label = ctk.CTkFrame(frame,fg_color='transparent')
 container_time_based_greetings_label.pack(padx=20,pady=10)
@@ -90,6 +94,7 @@ def options_menu(choice):
         btn_upload_wallpaper_img.configure(state='normal') 
         custom_quote_input.configure(state = 'normal')
         time_based_greetings_label.configure(state ='disabled' )
+        optionmenu_schedule.configure(state = 'disabled')
         optionmenu_quote.configure(state = 'disabled')
         city_input.configure(state = 'disabled')
 
@@ -97,16 +102,21 @@ def options_menu(choice):
         #      messagebox.showinfo('Uploaded', 'Image uploaded') 
              
 
-
+    
     else :
         time_based_greetings_label.configure(state ='normal' ) 
         optionmenu_quote.configure(state = 'normal')
         city_input.configure(state = 'normal')
+        optionmenu_schedule.configure(state = 'normal')
+        custom_quote_input.delete(0, 'end')
         btn_upload_wallpaper_img.configure(state='disabled') 
         custom_quote_input.configure(state = 'disabled')
         optionmenu_quote.configure(state = 'normal')
         container_Type_wallpaper_label_img.pack_forget()
         file_name_label.configure(text="")
+        
+
+
 
     print("optionmenu dropdown clicked:", choice)
 
@@ -159,6 +169,15 @@ city_label.pack(side = 'left')
 
 city_input = ctk.CTkEntry(container_city_input_label,font=("Oswald ExtraLight",15))
 city_input.pack(side='left', padx=5)
+
+
+schedule_label = ctk.CTkLabel(container_time_based_schedule,text='Select how often wallpaper should change:',font=("Oswald ExtraLight",15))
+schedule_label.pack(side = 'left')
+
+optionmenu_schedule = ctk.CTkOptionMenu(container_time_based_schedule,values=["Don't change", "2 hours", "5 hours", "10 hours", "24 hours"],font=("Oswald ExtraLight", 15))
+optionmenu_schedule.set("None")
+optionmenu_schedule.pack(side='left',padx=10)
+
 
 time_based_greetings_label = ctk.CTkCheckBox(container_time_based_greetings_label,text='Time based greetings',font=("Oswald ExtraLight", 15))
 time_based_greetings_label.pack(pady=5)
