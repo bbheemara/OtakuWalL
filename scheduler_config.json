@@ -1,0 +1,11 @@
+{
+    "schedule_enabled": false,
+    "genre": "cars",
+    "interval_hours": 0,
+    "wallpaper_type": "type a genre",
+    "quote_type": "None",
+    "city": "",
+    "use_time_greetings": 1,
+    "custom_quote": "",
+    "custom_path": null
+}
