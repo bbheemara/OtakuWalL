@@ -1,7 +1,7 @@
 ## OtakuWalL - Smart Wallpaper Generator and Setter
 
 A simple desktop app that generates and sets wallpapers automatically. It can fetch wallpapers, add quotes, show time-based greetings, and display current weather. The app can also create a Windows scheduled task to change the wallpaper automatically based on your settings!! which changes wallpaper auto without need of manual change
-
+- Demo Video: https://drive.google.com/file/d/1tB8EUb5TrTu4oHrfd15A0klPnzhWPj2u/view?usp=sharing
 ## Features
 
 #### Choose wallpaper type
