@@ -1,39 +1,53 @@
-# OtakuWalL – Smart Dynamic Anime Wallpaper Genarator
+## OtakuWalL - Smart Wallpaper Generator and Setter
 
-OtakuWalL is a smart desktop wallpaper generator that:
-- Fetches HD anime wallpapers (You can even get your favorite anime one's or random Too)
-- Gets quote for Motivation (From your favorite anime or random based on api)
-- Displays dynamic time-based greetings 
-- Shows current weather and temperature
+A simple desktop app that generates and sets wallpapers automatically. It can fetch wallpapers, add quotes, show time-based greetings, and display current weather. The app can also create a Windows scheduled task to change the wallpaper automatically based on your settings!! which changes wallpaper auto without need of manual change
 
+## Features
 
-## 🔧 Setup Instructions
+#### Choose wallpaper type
 
-1. Clone the repo
-```bash
-git clone https://github.com/bbheemara/OtakuWalL.git
-cd OtakuWalL
-```
-2. Install dependencies
-```bash
-pip install -r requirements.txt
-```
-3. Change according to your need
- 
-   In main.py change
-   
-   anime_name='your fav anime' (optional)
-   
-   also change
-   
-   city='your_city' for weather (Sign up for https://openweathermap.org/ and get your api key it's free and paste in .env)
-   
-   and If you want to change font of your choice just download your font and save in assets/fonts folder then in main.py FONT_PATH = 'assets/fonts/<your_font>'
+- Anime -  fetches anime wallpapers
 
+- Movie - fetches movie wallpapers
 
-5. Run the app and schedule the script 
-   ```bash
-   python main.py
-   ```
+- Nature - fetches nature wallpapers
 
-<img width="1919" height="1028" alt="Screenshot 2025-07-28 193149" src="https://github.com/user-attachments/assets/bf4ca6ad-b9ee-48d8-a3ed-ab518f4820cc" />
+- Custom - upload your own image from your PC (use an image with suitable dimensions so the quote is visible)
+
+- Type a genre - fetch wallpapers by keyword (for example: hacking, gaming, minecraft, or any popular searchable thing)
+
+#### Quote options
+
+- None - no quote on the wallpaper
+
+- Default - random or theme-matching quotes (for example, selecting Anime will try to show anime-related quotes)
+
+#### Text  input
+
+- Enter text to fetch wallpapers for a specific topic (e.g. gaming, hacking, minimal, etc.)
+
+#### Auto Scheduling
+
+#####  Choose how often the wallpaper should change (optional)
+
+#####  Uses Windows Task Scheduler to run the script
+
+- Options include: “Don’t change”, for testing choose: "every 0.02 hours" (≈ 1 minute),
+-  hourly intervals like every 2 hours/5/10/24
+
+#### Custom quote
+
+- Add a custom quote on your custom image (works only for custom images; use an image with proper height/width for results)
+
+#### Weather
+
+- Enter your city (optional) to display current weather and temperature on the wallpaper
+
+#### Time-based greetings
+
+- Toggle to show greetings based on the time of day (morning/afternoon/evening/ninght)
+
+#### How to use it
+- Download the release assets.zip  from the Releases or cdn link extract it and run the OtakuWalL.exe Application, change according to your preferences, set it! and be cool in this techie world:
+  https://github.com/bbheemara/OtakuWalL/releases/tag/release
+
