@@ -51,4 +51,4 @@ A simple desktop app that generates and sets wallpapers automatically. It can fe
 - Download the release assets.zip  from the Releases or cdn link extract it and run the OtakuWalL.exe Application, change according to your preferences, set it! and be cool in this techie world:
   https://github.com/bbheemara/OtakuWalL/releases/tag/release
 
-#### If you want to deleate the scheduled task just search task scheduler in windows open it then open Task scheduler Library > scroll down to last see the task named OtakuWalL select it then delete it
+### If you want to delete the scheduled task just for search task scheduler in windows open it then open task scheduler library scroll down to last see the task named otakuwall select it then delete it
