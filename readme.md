@@ -21,10 +21,11 @@ A simple desktop app that generates and sets wallpapers automatically. It can fe
 - **None** - no quote on the wallpaper
 
 - **Default** - random or theme-matching quotes (for example, selecting Anime will try to show anime-related quotes)
+     - quotes are not available for type a genre cause user can enter anything and anything can't have quote so..
 
 #### Text  input
 
-- **Enter text to fetch wallpapers for a specific topic (e.g. gaming, hacking, minimal, etc.)**
+- **Enter text to fetch wallpapers for a specific topic (e.g. gaming, hacking, minecraft, etc.)**
 
 #### Auto Scheduling
 
@@ -51,4 +52,7 @@ A simple desktop app that generates and sets wallpapers automatically. It can fe
 - **Download the release assets.zip  from the Releases or cdn link extract it and run the OtakuWalL.exe Application, change according to your preferences, set it! and be cool in this techie world:**
   https://github.com/bbheemara/OtakuWalL/releases/tag/release
 
+### If you want to save the current wallpaper just go to assets > backgrounds and you have both text and without text wallpaper!
+### Also windows may see this as a threat because the scheduler is auto set by app to run the script so, allow the folder/app in windows security:(
 ### If you want to delete the scheduled task just search for task scheduler in windows open it then open task scheduler library scroll down to last see the task named otakuwall select it then delete it
+
